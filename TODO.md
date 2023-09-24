@@ -10,6 +10,12 @@ On new video file
 * process by lillypad AI
 * add events to evt table
 
+## IPC
+* create new subnet
+* deploy ipc node
+* deploy tableland contracts to the node
+* add subnet configs to tableland validator
+
 ## UI
 Search recordings
 Show recordings 
