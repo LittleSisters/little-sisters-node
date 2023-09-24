@@ -31,7 +31,7 @@
   ],
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
-    "@openzeppelin/contracts-upgradeable": "^4.8.2",
+    "@openzeppelin/contracts-upgradeable": "^4.9.3",
     "@openzeppelin/hardhat-upgrades": "^1.22.1",
     "@tableland/hardhat": "^0.0.6",
     "@tableland/local": "^2.0.2",
@@ -52,7 +52,7 @@
     "solidity-coverage": "^0.8.2"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.9.0",
+    "@openzeppelin/contracts": "^4.9.3",
     "@tableland/evm": "^4.3.0"
   }
 }

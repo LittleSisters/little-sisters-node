@@ -1,4 +1,22 @@
 # TODO
+* create tables
+* test tables
+* deploy tables
+
+## Node
+On new video file
+* upload to lighthouse
+* add to rec table
+* process by lillypad AI
+* add events to evt table
+
+## UI
+Search recordings
+Show recordings 
+Play recordings
+Show cams on map
+
+
 ## Tables
 All tables are not mutable. Insertable by any sender.
 
