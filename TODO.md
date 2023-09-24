@@ -26,23 +26,23 @@ Show cams on map
 ## Tables
 All tables are not mutable. Insertable by any sender.
 
-### rec - recordings
-* snd - sender 
-* cam - camera id (unique per sender)
-* cid - file cid (unique)
-* stt - recording time start 
-* end - recording time end 
-* stp - time stamp (row added)
+### recs - recordings
+* stp txt - time stamp (row added)
+* snd txt - sender 
+* cam txt - camera id (unique per sender)
+* cid txt - file cid (unique)
+* stt int - recording time start 
+* end int - recording time end 
 
-### *evt - events (events, objects, persons etc., detected on recordings)
-* snd - sender 
-* cam - camera id (unique per sender)
-* cid - file cid 
-* tim - event time 
-* typ - event type 
-* n1, n2, n3 - event data numbers  (nullable)
-* s1, s2, s3 - event data strings  (nullable)
-* stp - time stamp (row added)
+### *evts - events (events, objects, persons etc., detected on recordings)
+* stp txt - time stamp (row added)
+* snd txt - sender 
+* cam txt - camera id (unique per sender)
+* cid txt - file cid 
+* tim int - event time 
+* typ txt - event type 
+* s1, s2, s3 txt - event data strings 
+* n1, n2, n3 int - event data numbers 
 
 
 
