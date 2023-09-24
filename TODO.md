@@ -1,12 +1,10 @@
 # TODO
-* create tables
-* test tables
-* deploy tables
 
 ## Node
 On new video file
 * upload to lighthouse
 * add to rec table
+### Phase 2
 * process by lillypad AI
 * add events to evt table
 
@@ -17,10 +15,13 @@ On new video file
 * add subnet configs to tableland validator
 
 ## UI
-Search recordings
-Show recordings 
-Play recordings
-Show cams on map
+* Search recordings
+* Show recordings 
+* Play recordings
+* Show cams on map
+
+## Presentation
+* Describe project and architecture
 
 
 ## Tables
