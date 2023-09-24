@@ -1,4 +1,4 @@
-# Tableland Hardhat TypeScript Template
+# Little Sister Tableland
 
 > Hardhat TypeScript starter template for @tableland applications
 
@@ -17,7 +17,7 @@
 
 ## Background
 
-This repo contains starter code for building [`@tableland`](https://github.com/tablelandnetwork) applications. It comes packed with packages and starter code, including:
+This repo contains starter code for building [`@tableland`](https://github.com/tablelandnetwork) Little Sister application. It comes packed with packages and starter code, including:
 
 - Tableland clients & tools—EVM contracts, SDK, Local Tableland, and Hardhat Tableland plugin.
 - A `Starter` contract that imports Tableland and OpenZeppelin contract—including table creation, writes, and access control setup.
@@ -133,4 +133,6 @@ Small note: If editing the README, please conform to the
 
 ## License
 
-MIT AND Apache-2.0, © 2021-2023 Tableland Network Contributors
+MIT AND Apache-2.0,
+© 2023 Bogdoslavik
+© 2021-2023 Tableland Network Contributors
