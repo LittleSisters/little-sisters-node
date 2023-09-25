@@ -10,3 +10,6 @@ bytecode.bin
 # Hardhat files
 cache
 artifacts
+
+# Recordings
+/recs

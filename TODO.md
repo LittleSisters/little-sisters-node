@@ -46,7 +46,20 @@ All tables are not mutable. Insertable by any sender.
 * n1, n2, n3 int - event data numbers 
 
 
+# ffmpeg
 
+ffmpeg -hide_banner -y -loglevel error -use_wallclock_as_timestamps 1 -i http://60.45.181.202:8080/mjpg/video.mjpg -vcodec copy -acodec copy -f segment -reset_timestamps 1 -segment_time 10 -segment_format mkv -strftime 1 -strftime_mkdir 1 recs/cam1_%Y-%m-%dT%H-%M-%S.mkv
+ffmpeg -hide_banner -y -loglevel error -rtsp_transport tcp -use_wallclock_as_timestamps 1 -i rtsp://username:password@192.168.1.123:554/stream1 -vcodec copy -acodec copy -f segment -reset_timestamps 1 -segment_time 900 -segment_format mp4 -strftime 1 cam1_%Y-%m-%d_T%H-%M-%S.mkv
+
+ffmpeg -f mjpeg -r 5 -i "http://172.17.2.101:8080/stream.mjpg?fps=10" -r 10 ./video.avi
+ffmpeg -i source_file.mov -pix_fmt yuv420p -b:v 4000k -c:v libx264 destination_file.mp4
+
+# Open Cameras
+Google search: https://www.google.com/search?q=inurl%3Amjpg%2Fvideo.mjpg
+
+* Soka, Japan http://60.45.181.202:8080/mjpg/video.mjpg
+* Lviv, Ukraine http://194.44.38.196:8083/mjpg/video.mjpg
+* * http://webcam.zvnoordwijk.nl:82/mjpg/video.mjpg
 
 # Deployed contracts
 -------------------
