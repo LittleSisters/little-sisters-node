@@ -1,16 +1,18 @@
 # TODO
 
-## Node
+* ! uncomment tableland upload at process.ts
+
+## Run same on IPC
+* create new subnet
+* deploy ipc node
+* deploy tableland contracts to the node
+* add subnet configs to tableland validator
+
 
 ### Phase 2
 * process by lillypad AI
 * add events to evt table
 
-## IPC
-* create new subnet
-* deploy ipc node
-* deploy tableland contracts to the node
-* add subnet configs to tableland validator
 
 ## UI
 * Search recordings

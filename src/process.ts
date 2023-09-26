@@ -7,11 +7,10 @@ import lighthouse from '@lighthouse-web3/sdk';
 import 'dotenv/config'
 import { Sisters } from "../typechain-types";
 
-
 const camLastFile: any = {};
-let sisters: Sisters;
 let provider: ethers.providers.JsonRpcProvider;
 let signer: ethers.Wallet;
+let sisters: Sisters;
 
 const getTheAbi = () => {
   try {
@@ -21,12 +20,15 @@ const getTheAbi = () => {
     )
     const file = fs.readFileSync(dir, "utf8")
     const json = JSON.parse(file)
-    const abi = json.abi
-    return abi
+    return json.abi
   } catch (e) {
-    console.log(`error`, e)
+    console.error(`error`, e)
   }
 }
+
+/*
+ * Returns the last file complete recording file for a camera (when new file is detected for this cam)
+ */
 function completeSegmentFile(cam: string, filename: string) {
   if (!camLastFile[cam]) {
     camLastFile[cam] = filename;
@@ -54,24 +56,12 @@ async function main() {
   if (!process.env.SISTERS_CONTRACT) throw new Error('SISTERS_CONTRACT is not set');
   sisters = new ethers.Contract(process.env.SISTERS_CONTRACT, getTheAbi(), signer) as Sisters;
 
-// For now no error handling yet
-  watch('recs', { recursive: true, delay: 500 }, async function(evt, name) {
-    if (evt !== 'update') return; // ignore other events
-    const baseName = path.parse(name).name;
-    const camName = baseName.split('_')[0];
-    const completeFile = completeSegmentFile(camName, name);
-
-    if (!completeFile) return;
-
-    console.log('completeFile:', completeFile);
-
-    const base = path.parse(name).name;
-    const [cam, date, time, segmentLengthSec] = base.split('_');
+  async function processFile(filename: string) {
+    const completeName = path.parse(filename).name;
+    const [cam, date, time, segmentLengthSec] = completeName.split('_');
     // get unix timestamp UTC
     const timeStart = Date.parse(`${date} ${time?.split('-').join(':')}`) / 1000;
     const timeEnd = timeStart + parseInt(segmentLengthSec);
-
-    // TODO make upload queue instead of multithreaded to avoid crowding
 
     const apiKey = process.env.LIGHTHOUSE_API_KEY;
     if (apiKey) {
@@ -83,9 +73,9 @@ async function main() {
       // );
       const lhUploadResponse = { // mock response
         data: {
-          Name: 'cam1_2023-09-25_12-49-52_10.mkv',
+          Name: path.parse(filename).base,
           Hash: 'QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMi' + Date.now().toString(),
-          Size: fs.statSync(completeFile).size.toString()
+          Size: fs.statSync(filename).size.toString()
         }
       }
       console.log(lhUploadResponse);
@@ -98,6 +88,19 @@ async function main() {
       console.log('receipt gasUsed', receipt.gasUsed.toString());
 
     }
+  }
+
+// For now no error handling yet
+  watch('recs', { recursive: true, delay: 500 }, async function(evt, fileChanged) {
+    if (evt !== 'update') return; // ignore other events
+    const nameChanged = path.parse(fileChanged).name;
+    const camName = nameChanged.split('_')[0];
+    const completeFile = completeSegmentFile(camName, fileChanged);
+
+    if (!completeFile) return;
+    console.log('completeFile:', completeFile);
+    // TODO make upload queue instead of multithreaded to avoid jams
+    await processFile(completeFile);
   });
 }
 

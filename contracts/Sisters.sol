@@ -4,9 +4,9 @@ pragma solidity >=0.8.10 <0.9.0;
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {TablelandController} from "@tableland/evm/contracts/TablelandController.sol";
 import {TablelandPolicy} from "@tableland/evm/contracts/TablelandPolicy.sol";
-import {TablelandDeployments} from "@tableland/evm/contracts/utils/TablelandDeployments.sol";
 import {SQLHelpers} from "@tableland/evm/contracts/utils/SQLHelpers.sol";
 import {ITablelandTables} from "@tableland/evm/contracts/interfaces/ITablelandTables.sol";
+import {Deployments} from "./Deployments.sol";
 
 // Starter template for contract owned and controlled tables
 contract Sisters is TablelandController {
@@ -24,7 +24,7 @@ contract Sisters is TablelandController {
 
     // Constructor that creates a table, sets the controller, and inserts data
     constructor() {
-        tableland = TablelandDeployments.get();
+        tableland = Deployments.get();
         // Create a recordings table
         recsId = tableland.create(
             address(this),
