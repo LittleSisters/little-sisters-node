@@ -87,6 +87,8 @@ describe("Recs contract", function () {
     expect(await sisters.evtsTableName()).to.equal("evts_31337_2");
   });
 
+  // TODO check table exists in database
+
   // TODO evts table tests
   it("should call registry to insert value", async function () {
     // Call the method externally, albeit, the contract is sending the SQL
@@ -95,5 +97,7 @@ describe("Recs contract", function () {
       .to.emit(registry, "RunSQL")
       .withArgs(sisters.address, true, 1, anyValue, anyValue);
   });
+
+  // TODO check inserted value in table
 
 });

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "record": "ffmpeg -hide_banner -y -loglevel error -use_wallclock_as_timestamps 1 -i http://194.44.38.196:8083/mjpg/video.mjpg -vcodec copy -acodec copy -f segment -reset_timestamps 1 -segment_time 30 -segment_format mkv -strftime 1 -strftime_mkdir 1 recs/cam1_%Y-%m-%d_%H-%M-%S_30.mkv",
-    "process": "hardhat run src/process.ts",
+    "process": "hardhat run src/process.ts --network localhost",
     "build": "hardhat compile",
     "clean": "hardhat clean && rm -rf artifacts && rm -rf cache && rm -rf coverage && rm -f coverage.json",
     "up": "npm install && npm run build && hardhat node --network local-tableland",

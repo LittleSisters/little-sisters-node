@@ -1,9 +1,7 @@
 # TODO
 
 ## Node
-On new video file
-* upload to lighthouse
-* add to rec table
+
 ### Phase 2
 * process by lillypad AI
 * add events to evt table
@@ -66,7 +64,9 @@ Google search: https://www.google.com/search?q=inurl%3Amjpg%2Fvideo.mjpg
 
 Contract deployed to '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9'.
 
-Table name 'starter_table_31337_2' minted to contract.
+Recordings Table name 'recs_31337_2' minted to contract.
+Events     Table name 'evts_31337_3' minted to contract.
+
 
 
 

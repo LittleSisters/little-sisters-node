@@ -19,7 +19,7 @@ contract Sisters is TablelandController {
 
     uint public immutable recsId;
     uint public immutable evtsId;
-    string private constant _REX_PREFIX = "recs"; // Records table prefix
+    string private constant _RECS_PREFIX = "recs"; // Records table prefix
     string private constant _EVTS_PREFIX = "evts"; // Records table prefix
 
     // Constructor that creates a table, sets the controller, and inserts data
@@ -34,8 +34,8 @@ contract Sisters is TablelandController {
                 "cam text,"
                 "cid text,"
                 "stt integer,"
-                "end integer,",
-                _REX_PREFIX
+                "edt integer",
+                _RECS_PREFIX
             )
         );
         // Create a events table
@@ -72,7 +72,7 @@ contract Sisters is TablelandController {
 
     // Sample getter to retrieve the table name
     function recsTableName() external view returns (string memory) {
-        return SQLHelpers.toNameFromId(_REX_PREFIX, recsId);
+        return SQLHelpers.toNameFromId(_RECS_PREFIX, recsId);
     }
 
     // Sample getter to retrieve the table name
@@ -82,28 +82,36 @@ contract Sisters is TablelandController {
 
     // TODO bath insert
     // Insert a row into the table from an external call (`id` will autoincrement)
-    function insertRec(string memory cam, string memory cid, int64 stt, int64 end) external {
+
+    /**
+     * @dev Insert a row into the recs (recordings) table
+     *
+     * @param cam - camera name
+     * @param cid - camera id
+     * @param stt - start time
+     * @param edt - end time
+     */
+    function insertRec(string memory cam, string memory cid, int64 stt, int64 edt) external {
         tableland.mutate(
             address(this),
             recsId,
-            SQLHelpers.toInsert(
-                _REX_PREFIX,
+            _toInsertAll(
+                _RECS_PREFIX,
                 recsId,
-                "*",
                 string.concat(
                     block.timestamp.toString(),',',
                     msg.sender.toHexString().quote(),',',
                     cam.quote(),',',
                     cid.quote(),',',
                     stt.toString(),',',
-                    end.toString()
+                    edt.toString()
                 )
             )
         );
     }
 
     // TODO bath insert
-    // Insert a row into the table from an external call (`id` will autoincrement)
+    // Insert a row into the evts (events) table
     function insertEvt(string memory cam, string memory cid, int64 tim, string memory typ, string memory s1, string memory s2, string memory s3, int64 n1, int64 n2, int64 n3) external {
         string memory s = string.concat(
             cam.quote(),',',
@@ -118,10 +126,9 @@ contract Sisters is TablelandController {
         tableland.mutate(
             address(this),
             recsId,
-            SQLHelpers.toInsert(
+            _toInsertAll(
                 _EVTS_PREFIX,
                 evtsId,
-                "*",
                 string.concat(
                     block.timestamp.toString(),',',
                     msg.sender.toHexString().quote(),',',
@@ -150,5 +157,25 @@ contract Sisters is TablelandController {
                 withCheck: "",
                 updatableColumns: updatableColumns
             });
+    }
+
+    /// Insert all values without columns specified to reduce gas cost
+    /// https://docs.tableland.xyz/fundamentals/architecture/query-optimization#table--schema-definition
+    function _toInsertAll(
+        string memory prefix,
+        uint256 tableId,
+        string memory values
+    ) internal view returns (string memory) {
+        string memory name = SQLHelpers.toNameFromId(prefix, tableId);
+        return
+            string(
+            abi.encodePacked(
+                "INSERT INTO ",
+                name,
+                " VALUES(",
+                values,
+                ")"
+            )
+        );
     }
 }

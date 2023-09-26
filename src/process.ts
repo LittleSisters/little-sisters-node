@@ -1,5 +1,5 @@
 // @ts-ignore
-import { ethers } from "hardhat";
+import { ethers } from "ethers";
 import fs from 'fs';
 import path from 'path';
 import watch from 'node-watch';
@@ -10,8 +10,23 @@ import { Sisters } from "../typechain-types";
 
 const camLastFile: any = {};
 let sisters: Sisters;
+let provider: ethers.providers.JsonRpcProvider;
+let signer: ethers.Wallet;
 
-
+const getTheAbi = () => {
+  try {
+    const dir = path.resolve(
+      __dirname,
+      "../artifacts/contracts/Sisters.sol/Sisters.json"
+    )
+    const file = fs.readFileSync(dir, "utf8")
+    const json = JSON.parse(file)
+    const abi = json.abi
+    return abi
+  } catch (e) {
+    console.log(`error`, e)
+  }
+}
 function completeSegmentFile(cam: string, filename: string) {
   if (!camLastFile[cam]) {
     camLastFile[cam] = filename;
@@ -29,9 +44,15 @@ function completeSegmentFile(cam: string, filename: string) {
 }
 
 async function main() {
+  console.log('Sisters PoC Node version 0.0.1');
+  console.log('TBL_PROVIDER_URL', process.env.TBL_PROVIDER_URL);
+  provider = new ethers.providers.JsonRpcProvider(process.env.TBL_PROVIDER_URL);
+  if (!process.env.TBL_PRIVATE_KEY) throw new Error('TBL_PRIVATE_KEY is not set');
+
+  signer = new ethers.Wallet(process.env.TBL_PRIVATE_KEY, provider)
   // Connect to Sisters contract by address
-  const SistersFactory = await ethers.getContractFactory("Sisters");
-  sisters = (await SistersFactory.attach(process.env.SISTERS_CONTRACT_ADDRESS)) as Sisters;
+  if (!process.env.SISTERS_CONTRACT) throw new Error('SISTERS_CONTRACT is not set');
+  sisters = new ethers.Contract(process.env.SISTERS_CONTRACT, getTheAbi(), signer) as Sisters;
 
 // For now no error handling yet
   watch('recs', { recursive: true, delay: 500 }, async function(evt, name) {
@@ -44,9 +65,10 @@ async function main() {
 
     console.log('completeFile:', completeFile);
 
-    const [cam, date, time, segmentLengthSec] = completeFile.split('_');
+    const base = path.parse(name).name;
+    const [cam, date, time, segmentLengthSec] = base.split('_');
     // get unix timestamp UTC
-    const timeStart = Date.parse(`${date} ${time?.replaceAll('-', ':')}`) / 1000;
+    const timeStart = Date.parse(`${date} ${time?.split('-').join(':')}`) / 1000;
     const timeEnd = timeStart + parseInt(segmentLengthSec);
 
     // TODO make upload queue instead of multithreaded to avoid crowding
@@ -66,14 +88,15 @@ async function main() {
           Size: fs.statSync(completeFile).size.toString()
         }
       }
+      console.log(lhUploadResponse);
 
       // Insert recording into tableland database
       console.log('insertRec', cam, lhUploadResponse.data.Hash, timeStart, timeEnd);
       const tx = await sisters.insertRec(cam, lhUploadResponse.data.Hash, timeStart, timeEnd);
       console.log('tx', tx.hash);
-      await tx.wait();
+      const receipt = await tx.wait();
+      console.log('receipt gasUsed', receipt.gasUsed.toString());
 
-      console.log(lhUploadResponse);
     }
   });
 }
