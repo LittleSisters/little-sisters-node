@@ -1,14 +1,17 @@
+// @ts-ignore
 import { ethers } from "hardhat";
 
 async function main() {
-  const Starter = await ethers.getContractFactory("Starter");
-  const starter = await Starter.deploy();
+  const Sisters = await ethers.getContractFactory("Sisters");
+  const sisters = await Sisters.deploy();
 
-  await starter.deployed();
-  console.log(`Contract deployed to '${starter.address}'.\n`);
+  await sisters.deployed();
+  console.log(`Sisters Contract deployed to '${sisters.address}'.\n`);
 
-  const tableName = await starter.tableName();
-  console.log(`Table name '${tableName}' minted to contract.`);
+  const recsTableName = await sisters.recsTableName();
+  console.log(`Recordings Table name '${recsTableName}' minted to contract.`);
+  const evtsTableName = await sisters.evtsTableName();
+  console.log(`Events     Table name '${evtsTableName}' minted to contract.`);
 }
 
 main().catch((error) => {

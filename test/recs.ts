@@ -44,8 +44,8 @@ describe("Recs contract", function () {
   // Deploy the fixture and `Starter` to ensure deterministic table IDs
   beforeEach(async function () {
     await loadFixture(deployFixture);
-    const StarterFactory = await ethers.getContractFactory("Sisters");
-    sisters = (await StarterFactory.deploy()) as Sisters;
+    const SistersFactory = await ethers.getContractFactory("Sisters");
+    sisters = (await SistersFactory.deploy()) as Sisters;
     await sisters.deployed();
   });
 
