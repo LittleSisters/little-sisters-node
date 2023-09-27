@@ -1,40 +1,21 @@
 # Little Sister Tableland
 
-> Hardhat TypeScript starter template for @tableland applications
-
-## Table of Contents
-
-- [Table of Contents](#table-of-contents)
-- [Background](#background)
-- [Usage](#usage)
-  - [Build \& deploy](#build--deploy)
-  - [Testing](#testing)
-  - [Formatting \& cleanup](#formatting--cleanup)
-  - [Extracting the ABI and bytecode](#extracting-the-abi-and-bytecode)
-  - [Contract verification](#contract-verification)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Background
-
-This repo contains starter code for building [`@tableland`](https://github.com/tablelandnetwork) Little Sister application. It comes packed with packages and starter code, including:
-
-- Tableland clients & tools—EVM contracts, SDK, Local Tableland, and Hardhat Tableland plugin.
-- A `Starter` contract that imports Tableland and OpenZeppelin contract—including table creation, writes, and access control setup.
-- Basic deployment script and a unit test that sets up the `TablelandTables` registry for contract interaction.
-- Other useful scripts and packages for local deployment, formatting, and testing—including `prettier`, `eslint`, `solhint`, and Hardhat configuration setup.
 
 ## Usage
 
 First, clone this repo:
 
 ```sh
-git clone https://github.com/tablelandnetwork/hardhat-ts-tableland-template
+git clone https://github.com/LittleSisters/little-sisters-node.git
 ```
 
 ### Build & deploy
 
-To simply compile contracts, you can install dependencies with `npm install` and then run:
+To simply compile contracts, you can install dependencies with 
+```
+npm install
+```
+and then run:
 
 ```
 npm run build
@@ -52,19 +33,52 @@ This will keep the nodes running until you exit the session. While this is runni
 npm run deploy:up
 ```
 
-Alternatively, you may want to deploy contracts locally but without active nodes running. The following can be used to deploy the contracts while also starting & shutting down Local Tableland and Hardhat nodes once the script exits. Be sure anything running via `npm run up` has been closed out before running:
-
+Configure .env file with your credentials. Copy env.example to .env and fill in LIGHTHOUSE_API_KEY. 
+You may not need to fill in other variables if you are not going to use other networks.
 ```
-npm run deploy:local
+LIGHTHOUSE_API_KEY=
+
+SISTERS_CONTRACT=0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
+TBL_PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+TBL_CHAIN=local-tableland
+TBL_PROVIDER_URL=http://127.0.0.1:8545/
+
+# test nets
+FILECOIN_CALIBRATION_PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 ```
 
-Lastly, to deploy to any live network listed in `hardhat.config.ts`, you can simply pass the network name after running the `deploy` command. The `.env.example` file should first be copied to a `.env` file and then have all of the values for private keys and API keys replaced. For example, to deploy contracts on Ethereum mainnet, you would do the following after creating a `.env` file with variables for `ETHEREUM_PRIVATE_KEY`, `ETHEREUM_API_KEY`, and (optionally) `ETHERSCAN_API_KEY`:
-
+To obtain a Lighthouse API key install CLI tool https://docs.lighthouse.storage/lighthouse-1/cli-tool/overview
 ```
-npm run deploy mainnet
+npm install -g @lighthouse-web3/sdk
+lighthouse-web3 import-wallet --key <private_key>
+lighthouse-web3 api-key --new
 ```
 
-Note that if no network name is passed, the script will fail.
+Check `recorder.config.json` for cameras configuration. You can find another open cameras on the internet
+https://www.google.com/search?q=inurl%3Amjpg%2Fvideo.mjpg
+
+* `recordings_directory` - directory where recordings will be stored
+* `seg` - segment duration in seconds (30 seconds for testing purposes, in real life it can be from hour to day)
+* `cmd` - for now  ffmpeg used to store recordings, but it can be changed to any other tool, or proxied with [mediamtx](https://github.com/bluenviron/mediamtx). 
+File names must be "cameraID_unixTimeStampStart_unixTimeStampEnd.ext" i.e. "cam1_1634170800_1634171100.mp4" to be properly processed.
+* `cameras` - array of cameras to record from. These parameters substituted to ffmpeg command. Also, these parameters saved to the `evts` table. 
+* * `id` - id
+* * `src` - source url
+* * `adr` - address
+* * `gps` - gps coordinates
+
+
+Run Little Sisters node:
+```
+npm run sister
+```
+
+It will start 
+1. recording from the cameras 
+2. uploading the recordings to the LightHouse
+3. adding the recordings to the local Tableland
+4. in future video files will be AI processed (locally or using Lillypad) and found events will be added to the Tableland.
+
 
 ### Testing
 
