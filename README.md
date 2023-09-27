@@ -51,7 +51,7 @@ https://www.google.com/search?q=inurl%3Amjpg%2Fvideo.mjpg
 * `recordings_directory` - directory where recordings will be stored
 * `seg` - segment duration in seconds (30 seconds for testing purposes, in real life it can be from hour to day)
 * `cmd` - for now  ffmpeg used to store recordings, but it can be changed to any other tool, or proxied with [mediamtx](https://github.com/bluenviron/mediamtx).
-  File names must be "cameraID_unixTimeStampStart_unixTimeStampEnd.ext" i.e. "cam1_1634170800_1634171100.mp4" to be properly processed.
+  File names must be `cameraID_unixTimeStampStart_unixTimeStampEnd.ext` i.e. `cam1_1634170800_1634171100.mp4` to be properly processed.
 * `cameras` - array of cameras to record from. These parameters substituted to ffmpeg command. Also, these parameters saved to the `evts` table.
 * * `id` - id
 * * `src` - source url
