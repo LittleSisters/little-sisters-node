@@ -1,0 +1,27 @@
+{
+  "recordings_directory" : "recs",
+  "defaults": {
+    "seg": 30,
+    "cmd": "ffmpeg -hide_banner -y -loglevel error -use_wallclock_as_timestamps 1 -i ${this.src} -vcodec copy -acodec copy -f segment -reset_timestamps 1 -segment_time ${this.seg} -segment_format mp4 -strftime 1 -strftime_mkdir 1 ${this.id}/${this.id}_%Y-%m-%d_%H-%M-%S_${this.seg}.mp4"
+  },
+
+  "cameras": [
+    {
+      "id": "LiverpoolLibrary",
+      "src": "https://webcam1.lpl.org/mjpg/video.mjpg",
+      "adr": "UK, Liverpool, Public Library, 1",
+      "gps": "43.10304802210654, -76.20776165230974"
+    },
+    {
+      "id": "camera1",
+      "src": "http://194.44.38.196:8083/mjpg/video.mjpg",
+      "adr": "Ukraine",
+      "gps": ""
+    },    {
+      "id": "kaiskuru",
+      "src": "http://77.222.181.11:8080/mjpg/video.mjpg",
+      "adr": "Kaiskuru skistadion, Alta, Norway",
+      "gps": "69.95522256486541, 23.3746201163227"
+    }
+  ]
+}

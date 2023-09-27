@@ -48,12 +48,7 @@ contract Sisters is TablelandController {
                 "cid text,"
                 "tim integer,"
                 "typ text,"
-                "s1 text,"
-                "s2 text,"
-                "s3 text,"
-                "n1 integer,"
-                "n2 integer,"
-                "n3 integer",
+                "val text",
                 _EVTS_PREFIX
             )
         );
@@ -110,34 +105,23 @@ contract Sisters is TablelandController {
         );
     }
 
-    // TODO bath insert
     // Insert a row into the evts (events) table
-    function insertEvt(string memory cam, string memory cid, int64 tim, string memory typ, string memory s1, string memory s2, string memory s3, int64 n1, int64 n2, int64 n3) external {
-        string memory s = string.concat(
+    function insertEvts(string memory cam, string memory cid, int64 tim, string[] memory typ, string[] memory val) external {
+        string memory same = string.concat(
+            block.timestamp.toString(),',',
+            msg.sender.toHexString().quote(),',',
             cam.quote(),',',
             cid.quote(),',',
-            tim.toString(),',',
-            typ.quote(),',',
-            s1.quote(), ',',
-            s2.quote(), ',',
-            s3.quote()
+            tim.toString(),','
         );
 
-        tableland.mutate(
-            address(this),
-            recsId,
-            _toInsertAll(
-                _EVTS_PREFIX,
-                evtsId,
-                string.concat(
-                    block.timestamp.toString(),',',
-                    msg.sender.toHexString().quote(),',',
-                    s,',',
-                    n1.toString(),',',
-                    n2.toString(),',',
-                    n3.toString()
-                )
-            )
+        string[] memory values = new string[](typ.length);
+        for (uint256 i = 0; i < typ.length; i++) {
+            values[i] = string.concat(same, typ[i].quote(), ',', val[i].quote());
+        }
+
+        tableland.mutate( address(this), evtsId,
+            _toBatchInsertAll(_EVTS_PREFIX, evtsId, values)
         );
     }
 
@@ -178,4 +162,23 @@ contract Sisters is TablelandController {
             )
         );
     }
+
+    function _toBatchInsertAll(
+        string memory prefix,
+        uint256 tableId,
+        string[] memory values
+    ) internal view returns (string memory) {
+        string memory name = SQLHelpers.toNameFromId(prefix, tableId);
+        string memory insert = string(
+            abi.encodePacked("INSERT INTO ", name, " VALUES")
+        );
+        insert = string(abi.encodePacked(insert, "(", values[0], ")"));
+
+        for (uint256 i = 1; i < values.length; i++) {
+            insert = string(abi.encodePacked(insert, ",(", values[i], ")"));
+        }
+        return insert;
+    }
+
+
 }

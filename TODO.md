@@ -30,7 +30,7 @@ All tables are not mutable. Insertable by any sender.
 ### recs - recordings
 * stp txt - time stamp (row added)
 * snd txt - sender 
-* cam txt - camera id (unique per sender)
+* cam txt - sender camera id 
 * cid txt - file cid (unique)
 * stt int - recording time start 
 * end int - recording time end 
@@ -38,12 +38,11 @@ All tables are not mutable. Insertable by any sender.
 ### *evts - events (events, objects, persons etc., detected on recordings)
 * stp txt - time stamp (row added)
 * snd txt - sender 
-* cam txt - camera id (unique per sender)
+* cam txt - sender camera id 
 * cid txt - file cid 
 * tim int - event time 
 * typ txt - event type 
-* s1, s2, s3 txt - event data strings 
-* n1, n2, n3 int - event data numbers 
+* val txt - event value 
 
 
 # ffmpeg
@@ -64,10 +63,13 @@ Google search: https://www.google.com/search?q=inurl%3Amjpg%2Fvideo.mjpg
 # Deployed contracts
 -------------------
 
-Contract deployed to '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9'.
+Sisters Contract deployed to '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853'.
 
 Recordings Table name 'recs_31337_2' minted to contract.
 Events     Table name 'evts_31337_3' minted to contract.
+
+https://localhost:8080/api/v1/query?statement=select%20%2A%20from%20evts_31337_3
+
 
 
 

@@ -1,30 +1,17 @@
 // @ts-ignore
-import { ethers } from "ethers";
 import fs from 'fs';
 import path from 'path';
 import watch from 'node-watch';
 import lighthouse from '@lighthouse-web3/sdk';
 import 'dotenv/config'
 import { Sisters } from "../typechain-types";
+import { getNetworkObjects } from "./tools";
 
-const camLastFile: any = {};
-let provider: ethers.providers.JsonRpcProvider;
-let signer: ethers.Wallet;
 let sisters: Sisters;
 
-const getTheAbi = () => {
-  try {
-    const dir = path.resolve(
-      __dirname,
-      "../artifacts/contracts/Sisters.sol/Sisters.json"
-    )
-    const file = fs.readFileSync(dir, "utf8")
-    const json = JSON.parse(file)
-    return json.abi
-  } catch (e) {
-    console.error(`error`, e)
-  }
-}
+const camLastFile: any = {};
+const filesToProcess: any = [];
+
 
 /*
  * Returns the last file complete recording file for a camera (when new file is detected for this cam)
@@ -46,15 +33,10 @@ function completeSegmentFile(cam: string, filename: string) {
 }
 
 async function main() {
-  console.log('Sisters PoC Node version 0.0.1');
+  console.log('Little Sisters PoC Processing Node version 0.0.1');
   console.log('TBL_PROVIDER_URL', process.env.TBL_PROVIDER_URL);
-  provider = new ethers.providers.JsonRpcProvider(process.env.TBL_PROVIDER_URL);
-  if (!process.env.TBL_PRIVATE_KEY) throw new Error('TBL_PRIVATE_KEY is not set');
 
-  signer = new ethers.Wallet(process.env.TBL_PRIVATE_KEY, provider)
-  // Connect to Sisters contract by address
-  if (!process.env.SISTERS_CONTRACT) throw new Error('SISTERS_CONTRACT is not set');
-  sisters = new ethers.Contract(process.env.SISTERS_CONTRACT, getTheAbi(), signer) as Sisters;
+  sisters = (await getNetworkObjects()).sisters;
 
   async function processFile(filename: string) {
     const completeName = path.parse(filename).name;
@@ -93,16 +75,30 @@ async function main() {
 // For now no error handling yet
   watch('recs', { recursive: true, delay: 500 }, async function(evt, fileChanged) {
     if (evt !== 'update') return; // ignore other events
+    if (fs.lstatSync(fileChanged).isDirectory()) return; // ignore directories
     const nameChanged = path.parse(fileChanged).name;
-    const camName = nameChanged.split('_')[0];
+    const [camName, date, time, segmentLengthSec] = nameChanged.split('_');
+    if (!(camName && date && time && segmentLengthSec)) {
+      console.log('Skipping Invalid filename:', fileChanged);
+      console.log('Filename must be in format "CameraId_UnixTimestampStart_UnixTimestampEnd.ext" ex. cam1_1620000000_1620000060.mp4');
+      return;
+    }
     const completeFile = completeSegmentFile(camName, fileChanged);
 
     if (!completeFile) return;
     console.log('completeFile:', completeFile);
-    // TODO make upload queue instead of multithreaded to avoid jams
-    await processFile(completeFile);
+    filesToProcess.push(completeFile);
   });
+
+  // Processing queue
+  setInterval(async () => {
+    if (filesToProcess.length === 0) return;
+    const completeFile = filesToProcess.shift();
+    console.log('processing completeFile', completeFile);
+    await processFile(completeFile);
+  }, 100);
 }
+
 
 main().then();
 
