@@ -25,18 +25,20 @@ export async function startRecording() {
     console.log('cmd', cmd);
     console.log('process.cwd()', process.cwd());
 
-    /// start recording
+    /// start recording command
     ensureDir(config.recordings_directory + '/' + cam.id);
     child_process.exec(cmd, {cwd:config.recordings_directory}, function(error, stdout, stderr){
       if (stdout) console.log('Camera:', cam.id, stdout);
       if (stderr) console.log('Camera Error:', cam.id, stderr);
       if (error) throw error;
+      // TODO try to restart camera on error
     });
     console.log('Populating', cam.id);
-    /// populate events table with camera metadata // TODO bath insert
+
+    /// populate events table with camera metadata
     const params = {...cam}
-    delete params['id'];
-    delete params['cmd'];
+    delete params['id']; // remove id from params
+    delete params['cmd']; // remove cmd from params
     const keys = Object.keys(params);
     const values = Object.values(params).map((v) => v.toString());
     console.log('keys', keys);

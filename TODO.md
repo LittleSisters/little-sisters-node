@@ -2,11 +2,12 @@
 
 * ! uncomment tableland upload at process.ts
 
-## Run same on IPC
-* create new subnet
-* deploy ipc node
-* deploy tableland contracts to the node
-* add subnet configs to tableland validator
+
+## UI
+* Search recordings
+* Show recordings
+* Play recordings
+* Show cams on map
 
 
 ### Phase 2
@@ -14,11 +15,11 @@
 * add events to evt table
 
 
-## UI
-* Search recordings
-* Show recordings 
-* Play recordings
-* Show cams on map
+## Run same on IPC
+* create new subnet
+* deploy ipc node
+* deploy tableland contracts to the node
+* add subnet configs to tableland validator
 
 ## Presentation
 * Describe project and architecture
