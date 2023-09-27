@@ -90,11 +90,22 @@ export async function startProcessing() {
   });
 
   // Processing queue
+  let processing: boolean;
   setInterval(async () => {
-    if (filesToProcess.length === 0) return;
-    const completeFile = filesToProcess.shift();
-    console.log('processing completeFile', completeFile);
-    await processFile(completeFile);
+    if (processing) return;
+    processing = true;
+    try {
+      if (filesToProcess.length === 0) return;
+      const completeFile = filesToProcess.shift();
+      console.log('Processing ', completeFile);
+      await processFile(completeFile);
+
+    } catch (e) {
+      console.error('Error processing file', e);
+
+    } finally {
+      processing = false;
+    }
   }, 100);
 }
 
