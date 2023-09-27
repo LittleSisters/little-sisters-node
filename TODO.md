@@ -68,7 +68,8 @@ Sisters Contract deployed to '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853'.
 Recordings Table name 'recs_31337_2' minted to contract.
 Events     Table name 'evts_31337_3' minted to contract.
 
-https://localhost:8080/api/v1/query?statement=select%20%2A%20from%20evts_31337_3
+http://localhost:8080/api/v1/query?statement=select%20%2A%20from%20recs_31337_2
+http://localhost:8080/api/v1/query?statement=select%20%2A%20from%20evts_31337_3
 
 
 

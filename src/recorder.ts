@@ -7,8 +7,9 @@ import 'dotenv/config'
 let sisters: Sisters;
 
 type Parameters = {[index: string]:any};
-async function main() {
-  console.log('Little Sisters PoC Recorder version 0.0.1');
+export async function startRecording() {
+  console.log('\n=== Start Recording ===');
+  console.time('startRecording');
 
   ensureDir(config.recordings_directory);
   const cameras = config.cameras;
@@ -17,6 +18,8 @@ async function main() {
 
   for (const camera of cameras) {
     const cam = {...config.defaults, ...camera} as Parameters
+    console.log();
+    console.log(`*** CAMERA ${cam.id} ***`);
     console.log(cam);
     const cmd = fillTemplate(cam.cmd, cam);
     console.log('cmd', cmd);
@@ -40,10 +43,6 @@ async function main() {
     console.log('values', values);
     await sisters.insertEvts(cam.id, '', unixTimestamp(), keys, values);
   }
+  console.timeEnd('startRecording');
 
 }
-
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});

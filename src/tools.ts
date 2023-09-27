@@ -1,7 +1,9 @@
 import path from "path";
 import fs from "fs";
-import { ethers } from "ethers";
+import { ethers, Signer } from "ethers";
 import { Sisters } from "../typechain-types";
+import 'dotenv/config'
+import { Provider } from "@ethersproject/providers";
 
 export const getTheAbi = () => {
   try {
@@ -17,14 +19,18 @@ export const getTheAbi = () => {
   }
 }
 
+let provider: Provider;
+let signer: Signer;
+let sisters: Sisters;
+
 export async function getNetworkObjects() {
-  const provider = new ethers.providers.JsonRpcProvider(process.env.TBL_PROVIDER_URL);
+  if (!provider) provider = new ethers.providers.JsonRpcProvider(process.env.TBL_PROVIDER_URL);
   if (!process.env.TBL_PRIVATE_KEY) throw new Error('TBL_PRIVATE_KEY is not set');
 
-  const signer = new ethers.Wallet(process.env.TBL_PRIVATE_KEY, provider)
+  if (!signer) signer = new ethers.Wallet(process.env.TBL_PRIVATE_KEY, provider)
   // Connect to Sisters contract by address
   if (!process.env.SISTERS_CONTRACT) throw new Error('SISTERS_CONTRACT is not set');
-  const sisters = new ethers.Contract(process.env.SISTERS_CONTRACT, getTheAbi(), signer) as Sisters;
+  if (!sisters) sisters = new ethers.Contract(process.env.SISTERS_CONTRACT, getTheAbi(), signer) as Sisters;
   return {provider, signer, sisters};
 }
 

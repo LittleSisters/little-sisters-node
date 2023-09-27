@@ -32,9 +32,8 @@ function completeSegmentFile(cam: string, filename: string) {
   return lastFile;
 }
 
-async function main() {
-  console.log('Little Sisters PoC Processing Node version 0.0.1');
-  console.log('TBL_PROVIDER_URL', process.env.TBL_PROVIDER_URL);
+export async function startProcessing() {
+  console.log('\n=== Start Processing ===');
 
   sisters = (await getNetworkObjects()).sisters;
 
@@ -67,7 +66,7 @@ async function main() {
       const tx = await sisters.insertRec(cam, lhUploadResponse.data.Hash, timeStart, timeEnd);
       console.log('tx', tx.hash);
       const receipt = await tx.wait();
-      console.log('receipt gasUsed', receipt.gasUsed.toString());
+      console.log('receipt gasUsed', receipt.gasUsed.toString(), '\n');
 
     }
   }
@@ -98,7 +97,4 @@ async function main() {
     await processFile(completeFile);
   }, 100);
 }
-
-
-main().then();
 
