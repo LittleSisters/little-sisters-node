@@ -47,18 +47,16 @@ export async function startProcessing() {
     const apiKey = process.env.LIGHTHOUSE_API_KEY;
     if (apiKey) {
       /// We can use encrypted upload for private (indoor) camera recordings later
-      // const lhUploadResponse = await lighthouse.upload(
-      //   completeFile,
-      //   apiKey,
-      //   false
-      // );
-      const lhUploadResponse = { // mock response
-        data: {
-          Name: path.parse(filename).base,
-          Hash: 'QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMi' + Date.now().toString(),
-          Size: fs.statSync(filename).size.toString()
-        }
-      }
+      const lhUploadResponse = await lighthouse.upload(
+        filename, apiKey,false
+      );
+      // const lhUploadResponse = { // mock response
+      //   data: {
+      //     Name: path.parse(filename).base,
+      //     Hash: 'QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMi' + Date.now().toString(),
+      //     Size: fs.statSync(filename).size.toString()
+      //   }
+      // }
       console.log(lhUploadResponse);
 
       // Insert recording into tableland database
@@ -67,6 +65,10 @@ export async function startProcessing() {
       console.log('tx', tx.hash);
       const receipt = await tx.wait();
       console.log('receipt gasUsed', receipt.gasUsed.toString(), '\n');
+
+      // AI Data Extraction
+      // LATER Run Lilypad API to extract car plate numbers, faces, actions etc.
+      // LATER Save extracted events to the evts table
 
     }
   }

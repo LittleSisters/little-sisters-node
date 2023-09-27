@@ -6,14 +6,15 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "record": "ffmpeg -hide_banner -y -loglevel error -use_wallclock_as_timestamps 1 -i http://194.44.38.196:8083/mjpg/video.mjpg -vcodec copy -acodec copy -f segment -reset_timestamps 1 -segment_time 30 -segment_format mp4 -strftime 1 -strftime_mkdir 1 recs/cam1_%Y-%m-%d_%H-%M-%S_30.mp4",
+    "up": "npm install && npm run build && hardhat node --network local-tableland",
+    "deploy:up": "hardhat run scripts/deploy.ts --network localhost",
+    "bacalhau": "docker image rm -f ghcr.io/bacalhau-project/bacalhau:latest && docker pull ghcr.io/bacalhau-project/bacalhau:latest && docker run -it ghcr.io/bacalhau-project/bacalhau:latest version",
     "sister": "ts-node src/sister.ts",
+    "record": "ffmpeg -hide_banner -y -loglevel error -use_wallclock_as_timestamps 1 -i http://194.44.38.196:8083/mjpg/video.mjpg -vcodec copy -acodec copy -f segment -reset_timestamps 1 -segment_time 30 -segment_format mp4 -strftime 1 -strftime_mkdir 1 recs/cam1_%Y-%m-%d_%H-%M-%S_30.mp4",
     "build": "hardhat compile",
     "clean": "hardhat clean && rm -rf artifacts && rm -rf cache && rm -rf coverage && rm -f coverage.json",
-    "up": "npm install && npm run build && hardhat node --network local-tableland",
     "lt": "hardhat node --network local-tableland",
     "deploy": "hardhat run scripts/deploy.ts --network",
-    "deploy:up": "hardhat run scripts/deploy.ts --network localhost",
     "deploy:local": "hardhat run scripts/deploy.ts --network local-tableland",
     "test": "hardhat test",
     "coverage": "hardhat coverage && istanbul check-coverage ./coverage.json --statements 100 --branches 95 --functions 100 --lines 100",
