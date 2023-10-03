@@ -17,12 +17,6 @@
       "src": "http://194.44.38.196:8083/mjpg/video.mjpg",
       "adr": "Lviv, Ukraine",
       "gps": ""
-    },
-    {
-      "id": "kaiskuru",
-      "src": "http://77.222.181.11:8080/mjpg/video.mjpg",
-      "adr": "Kaiskuru skistadion, Alta, Norway",
-      "gps": "69.95522256486541, 23.3746201163227"
     }
   ]
 }
